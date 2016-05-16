@@ -47,3 +47,10 @@ do
   cat aap0 | sort -u >aap1
   mv aap1 aap0
 done
+
+# Attack aap0
+cat aap0 | \
+while read n
+do
+  openssl aes-256-cbc -d -in vakantie.key -k $n >/dev/null 2>&1 && echo $n ok && exit
+done
