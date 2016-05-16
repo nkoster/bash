@@ -48,7 +48,7 @@ do
   mv aap1 aap0
 done
 
-# Attack aap0
+# Attack, with aap0 dictionary
 cat aap0 | \
 while read n
 do
