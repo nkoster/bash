@@ -54,6 +54,12 @@ if [ $MINUTES = 1 ]
 then
   SM=""
 fi
+SECONDS=$(echo "($TOTAL-($HOURS*3600*100)-($MINUTES*60*100))/100" | bc)
+SS="s"
+if [ $SECONDS = 1 ]
+then
+  SS=""
+fi
 
-echo "$HOURS hour$SH, $MINUTES minute$SM"
+echo "$HOURS hour$SH, $MINUTES minute$SM, $SECONDS second$SS"
 echo
