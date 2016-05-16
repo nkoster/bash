@@ -10,7 +10,7 @@ then
 fi
 
 cd $1
-FILES=$(ls *mp3 | wc -l)
+FILES=$(ls *mp[34] | wc -l)
 S="s"
 if [ $FILES = 1 ]
 then
@@ -18,14 +18,13 @@ then
 fi
 
 echo
-echo -n "$FILES mp3 file$S total play time: "
+echo -n "$FILES mp3/mp4 file$S total play time: "
 
 TOTAL=$(
-for mp3 in *mp3
+for mp in *mp[34]
 do
-  echo -n "$mp3 "
   DUR=$( \
-    avconv -i $mp3 -f metadata 2>&1 | \
+    avconv -i "$mp" -f metadata 2>&1 | \
     grep Duration | \
     awk '{print $2}' | \
     perl -pe 's/,//,s/\./:/')
@@ -37,7 +36,7 @@ do
   }'
 done | while read meta
 do
-  time=$(echo $meta | awk '{print $2}')
+  time=$(echo $meta)
   (( TOTAL += time ))
   echo "$TOTAL"
 done | tail -1
