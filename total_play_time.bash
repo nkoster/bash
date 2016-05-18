@@ -4,7 +4,7 @@ if [ $# -eq 0 ]
 then
   echo
   echo "Usage: $0 <directory>"
-  echo "<directory> contains one or more mp3 files"
+  echo "<directory> contains one or more mp3/mp4 files"
   echo
   exit 1
 fi
