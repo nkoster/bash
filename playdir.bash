@@ -10,7 +10,7 @@ echo
 
 for n in $(pwd)/*
 do
-  if ! [[ -d $n ]]
+  if [[ -f $n ]]
   then
     echo $n
     sleep 1
