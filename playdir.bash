@@ -10,7 +10,10 @@ echo
 
 for n in $(pwd)/*
 do
-  echo $n
-  sleep 1
-  mplayer --quiet --novideo "$n" >/dev/null 2>&1 || break
+  if ! [[ -d $n ]]
+  then
+    echo $n
+    sleep 1
+    mplayer --quiet --novideo "$n" >/dev/null 2>&1 || break
+  fi
 done
