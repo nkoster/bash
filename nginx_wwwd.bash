@@ -18,18 +18,26 @@ LATEST_PCRE_VERSION=$(echo "${LATEST_PCRE_TAR_GZ}" | \
   sed 's/^.*pcre-//' | \
   sed 's/.tar.gz//')
 
-LATEST_ZLIB12_TAR_GZ="zlib-$(curl -s http://sourceforge.net/projects/libpng/files/zlib/ | \
-  grep '1\.2\.' | \
-  grep 'href=' | \
-  grep 'img ' | \
-  awk -F '"' '{print $2}' | \
-  awk -F '/' '{print $6}' | \
-  sort -u | \
-  tail -1).tar.gz"
+#LATEST_ZLIB12_TAR_GZ="zlib-$(curl -s http://sourceforge.net/projects/libpng/files/zlib/ | \
+#  grep '1\.2\.' | \
+#  grep 'href=' | \
+#  grep 'img ' | \
+#  awk -F '"' '{print $2}' | \
+#  awk -F '/' '{print $6}' | \
+#  sort -u | \
+#  tail -1).tar.gz"
 
-LATEST_ZLIB12_VERSION=$(echo "${LATEST_ZLIB12_TAR_GZ}" | \
-  sed 's/^.*zlib-//' | \
-  sed 's/.tar.gz//')
+#LATEST_ZLIB12_VERSION=$(echo "${LATEST_ZLIB12_TAR_GZ}" | \
+#  sed 's/^.*zlib-//' | \
+#  sed 's/.tar.gz//')
+
+LATEST_ZLIB12_VERSION=$(curl -sL http://sourceforge.net/projects/libpng/files/zlib/ | \
+  grep 'Click to enter ' | \
+  sort -u | \
+  tail -1 | \
+  awk '{print $4}'|sed 's/"//')
+
+LATEST_ZLIB12_TAR_GZ="zlib-${LATEST_ZLIB12_VERSION}.tar.gz"
 
 LATEST_NGINX_TAR_GZ=$(curl -s http://nginx.org/download/ | \
   grep nginx | \
@@ -50,7 +58,7 @@ echo "Latest zlib: ${LATEST_ZLIB12_TAR_GZ} ${LATEST_ZLIB12_VERSION}"
 echo "Latest nginx: ${LATEST_NGINX_TAR_GZ} ${LATEST_NGINX_VERSION}"
 echo
 
-SRC_DIRECTORY=/slot/home/w3b/src
+SRC_DIRECTORY=/home/niels/src
 cd $SRC_DIRECTORY
 
 [ -f ${LATEST_OPENSSL_TAR_GZ} ] && rm -f ${LATEST_OPENSSL_TAR_GZ}
@@ -162,3 +170,4 @@ make clean
   sudo make install && \
   sudo service nginx start && \
   echo 'NGINX INSTALLED!'
+  
