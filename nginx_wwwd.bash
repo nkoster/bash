@@ -1,5 +1,8 @@
 #!/bin/bash
 
+SRC_DIRECTORY=/slot/home/w3b/src
+cd $SRC_DIRECTORY
+
 LATEST_OPENSSL_TAR_GZ=$(curl -s ftp://ftp.openssl.org/source/ | \
   grep 'tar\.gz$' | \
   egrep -v 'beta|fips|pre' | \
@@ -18,19 +21,6 @@ LATEST_PCRE_VERSION=$(echo "${LATEST_PCRE_TAR_GZ}" | \
   sed 's/^.*pcre-//' | \
   sed 's/.tar.gz//')
 
-#LATEST_ZLIB12_TAR_GZ="zlib-$(curl -s http://sourceforge.net/projects/libpng/files/zlib/ | \
-#  grep '1\.2\.' | \
-#  grep 'href=' | \
-#  grep 'img ' | \
-#  awk -F '"' '{print $2}' | \
-#  awk -F '/' '{print $6}' | \
-#  sort -u | \
-#  tail -1).tar.gz"
-
-#LATEST_ZLIB12_VERSION=$(echo "${LATEST_ZLIB12_TAR_GZ}" | \
-#  sed 's/^.*zlib-//' | \
-#  sed 's/.tar.gz//')
-
 LATEST_ZLIB12_VERSION=$(curl -sL http://sourceforge.net/projects/libpng/files/zlib/ | \
   grep 'Click to enter ' | \
   sort -u | \
@@ -39,17 +29,37 @@ LATEST_ZLIB12_VERSION=$(curl -sL http://sourceforge.net/projects/libpng/files/zl
 
 LATEST_ZLIB12_TAR_GZ="zlib-${LATEST_ZLIB12_VERSION}.tar.gz"
 
-LATEST_NGINX_TAR_GZ=$(curl -s http://nginx.org/download/ | \
-  grep nginx | \
-  grep 'tar.gz' | \
-  grep -v 'tar.gz.asc' | \
-  awk -F '"' '{print $2}' | \
-  sort -u | \
-  tail -1)
+LATEST_NGINX_MAJOR=0
+LATEST_NGINX_MINOR=0
+LATEST_NGINX_PATCH=0
+LATEST_NGINX_VERSION=0.0.0
 
-LATEST_NGINX_VERSION=$(echo "${LATEST_NGINX_TAR_GZ}" | \
-  sed 's/^.*nginx-//' | \
-  sed 's/.tar.gz//')
+while read VERSION
+do
+  NGINX_MAJOR=$(echo $VERSION | awk -F '.' '{print $1}')
+  NGINX_MINOR=$(echo $VERSION | awk -F '.' '{print $2}')
+  NGINX_PATCH=$(echo $VERSION | awk -F '.' '{print $3}')
+  V=$(expr "($NGINX_MAJOR * 100) + ($NGINX_MINOR * 10) + $NGINX_PATCH")
+
+  LATEST_NGINX_MAJOR=$(echo $LATEST_NGINX_VERSION | awk -F '.' '{print $1}')
+  LATEST_NGINX_MINOR=$(echo $LATEST_NGINX_VERSION | awk -F '.' '{print $2}')
+  LATEST_NGINX_PATCH=$(echo $LATEST_NGINX_VERSION | awk -F '.' '{print $3}')
+  LV=$(expr "($LATEST_NGINX_MAJOR * 100) + ($LATEST_NGINX_MINOR * 10) + $LATEST_NGINX_PATCH")
+
+  if (( $V > $LV ))
+  then
+    LATEST_NGINX_VERSION=$VERSION
+  fi
+
+done < <(curl -s http://nginx.org/download/ | \
+sort -u | \
+grep 'nginx-' | \
+awk -F '"' '{print $2}' | \
+egrep -v 'asc$|zip$' | \
+sed 's/^nginx-//' | \
+sed 's/\.tar\.gz$//')
+
+LATEST_NGINX_TAR_GZ="nginx-${LATEST_NGINX_VERSION}.tar.gz"
 
 echo
 echo "Latest openssl: ${LATEST_OPENSSL_TAR_GZ} ${LATEST_OPENSSL_VERSION}"
@@ -57,9 +67,6 @@ echo "Latest pcre: ${LATEST_PCRE_TAR_GZ} ${LATEST_PCRE_VERSION}"
 echo "Latest zlib: ${LATEST_ZLIB12_TAR_GZ} ${LATEST_ZLIB12_VERSION}"
 echo "Latest nginx: ${LATEST_NGINX_TAR_GZ} ${LATEST_NGINX_VERSION}"
 echo
-
-SRC_DIRECTORY=/home/niels/src
-cd $SRC_DIRECTORY
 
 [ -f ${LATEST_OPENSSL_TAR_GZ} ] && rm -f ${LATEST_OPENSSL_TAR_GZ}
 [ -f ${LATEST_PCRE_TAR_GZ} ] && rm -f ${LATEST_PCRE_TAR_GZ}
@@ -109,15 +116,6 @@ do
     head -1)
 done
 echo
-
-#echo "Add font style..."
-#perl -pe 's/<head>(.*)<\/head>/<head>" CRLF\n"<style>\@font-face { font-family:\\"ffs\\";src:url(\/fonts\/fairfaxstation.ttf) } <\/style>" CRLF\n"$1" CRLF\n"<\/head>/g' -i \
-#${SRC_DIRECTORY}/nginx-${LATEST_NGINX_VERSION}/src/http/ngx_http_special_response.c
-#echo
-
-#echo "Change body color and font-family..."
-#perl -pe 's/"<body bgcolor=\\"white\\">" CRLF/"<body bgcolor=\\"#f0f0f0\\" style=\\"font-family:ffs\\">" CRLF/g' -i ${SRC_DIRECTORY}/nginx-${LATEST_NGINX_VERSION}/src/http/ngx_http_special_response.c
-#echo
 
 echo "Change body color..."
 perl -pe 's/"<body bgcolor=\\"white\\">" CRLF/"<body bgcolor=\\"#f0f0f0\\">" CRLF/g' -i ${SRC_DIRECTORY}/nginx-${LATEST_NGINX_VERSION}/src/http/ngx_http_special_response.c
@@ -170,4 +168,3 @@ make clean
   sudo make install && \
   sudo service nginx start && \
   echo 'NGINX INSTALLED!'
-  
