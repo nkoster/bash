@@ -1,6 +1,6 @@
 #!/bin/bash
 
-SRC_DIRECTORY=/slot/home/w3b/src
+SRC_DIRECTORY=/home/niels/src
 cd $SRC_DIRECTORY
 
 LATEST_OPENSSL_TAR_GZ=$(curl -s ftp://ftp.openssl.org/source/ | \
@@ -116,6 +116,15 @@ do
     head -1)
 done
 echo
+
+#echo "Add font style..."
+#perl -pe 's/<head>(.*)<\/head>/<head>" CRLF\n"<style>\@font-face { font-family:\\"ffs\\";src:url(\/fonts\/fairfaxstation.ttf) } <\/style>" CRLF\n"$1" CRLF\n"<\/head>/g' -i \
+#${SRC_DIRECTORY}/nginx-${LATEST_NGINX_VERSION}/src/http/ngx_http_special_response.c
+#echo
+
+#echo "Change body color and font-family..."
+#perl -pe 's/"<body bgcolor=\\"white\\">" CRLF/"<body bgcolor=\\"#f0f0f0\\" style=\\"font-family:ffs\\">" CRLF/g' -i ${SRC_DIRECTORY}/nginx-${LATEST_NGINX_VERSION}/src/http/ngx_http_special_response.c
+#echo
 
 echo "Change body color..."
 perl -pe 's/"<body bgcolor=\\"white\\">" CRLF/"<body bgcolor=\\"#f0f0f0\\">" CRLF/g' -i ${SRC_DIRECTORY}/nginx-${LATEST_NGINX_VERSION}/src/http/ngx_http_special_response.c
