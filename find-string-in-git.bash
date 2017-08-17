@@ -18,7 +18,7 @@ do
 		result=`egrep -lir "$1" "$repo" | grep -v "^${repo}/.git"`
 		if [ ! -z "$result" ]
 		then
-			count=$(echo "$result"|wc -l)
+			count=$(echo "$result" | wc -l)
 			echo
 			echo -n "Git repository \"${repo}\" has a match for \"${1}\" in $count file"
 			[ $count -eq 1 ] || echo -n s
