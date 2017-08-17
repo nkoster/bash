@@ -19,7 +19,7 @@ do
 		if [ ! -z "$result" ]
 		then
 			count=$(echo "$result"|wc -l)
-        	echo
+			echo
 			echo -n "Git repository \"${repo}\" has a match for \"${1}\" in $count file"
 			[ $count -eq 1 ] || echo -n s
 			echo ":"
