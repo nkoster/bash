@@ -5,7 +5,7 @@
 function jql {
 
 url=https://$2/rest/api/2/search?jql=${1// /%20}
-curl -s -u $3:$4 \
+curl -s -u "$3":"$4" \
   -X GET -H "Content-Type: application/json" $url | \
 awk '/^\{/' | \
 jq '.' | \
