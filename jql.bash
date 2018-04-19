@@ -12,9 +12,9 @@ jq '.' | \
 awk 'BEGIN{count=0}/^      "key":/{count++;printf("%s ", substr($2,2,length($2)-3))}END{print"("count")"}' 
 }
 
-if [ $# -lt 2 ]
+if [ $# -lt 4 ]
 then
-  echo "Usage: $0 '<jql query> <fqdn[:port]> <user> <password file>"
+  echo "Usage: $0 '\'<jql query>\' <fqdn[:port]> <user> <password>"
   echo "Remark: only https calls are supported."
   exit 1
 fi
