@@ -16,7 +16,7 @@ fi
 export GPG_TTY=$(tty)
 
 echo "Starting listener at port $port_local"
-while true ; do ncat -l $port_local | gpg -d --batch --passphrase "$(cat /home/niels/secure/hup3)" 2>/dev/null ; done &
+while true ; do output=`ncat -l $port_local | gpg -d --batch --passphrase "$(cat /home/niels/secure/hup3)" 2>/dev/null` ; echo -e "\033[32m${output}\033[0m" ; done &
 
 echo "Initiating pgp chat to $user_remote at $host"
 echo
