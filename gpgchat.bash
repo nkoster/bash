@@ -1,6 +1,14 @@
 #!/bin/bash
 
-[[ $# -lt 4 ]] && exit 1
+echo
+echo "GPG chat 1.0"
+echo
+
+if [ $# -lt 4 ]; then
+    echo "Usage: $0 <remote PGP id> <host> <local port> <remote port>"
+    echo
+    exit 1
+fi
 
 user_remote="$1"
 host="$2"
@@ -17,11 +25,13 @@ export GPG_TTY=$(tty)
 
 echo -n 'Private key password (will not echo): '
 read -s password
+echo
+echo
 
 echo "Starting listener at port $port_local"
 while true ; do output=`ncat -l $port_local | gpg -d --batch --passphrase "$password" 2>/dev/null` ; echo -e "\033[32m${output}\033[0m" ; done &
 
-echo "Initiating pgp chat to $user_remote at $host"
+echo -e "Initiating chat with ${user_remote} at $host, port $port_remote"
 echo
 
 while true
