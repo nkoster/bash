@@ -9,7 +9,6 @@ name=${1%%.*}
 extension=${1##*.}
 extension=${extension^^}
 
-echo "$name --- $extension"
 
 if [ ! -f "$1" ]; then
     echo "noo $1"
@@ -21,7 +20,6 @@ fontforge -c "import fontforge;fontforge.open('$1').generate('$name/fonts/$name/
 fontforge -c "import fontforge;fontforge.open('$1').generate('$name/fonts/$name/$name.eot')"
 fontforge -c "import fontforge;fontforge.open('$1').generate('$name/fonts/$name/$name.svg')"
 fontforge -c "import fontforge;fontforge.open('$1').generate('$name/fonts/$name/$name.woff')"
-cp $1 $name/fonts/$name/
 
 mkdir -p "$name/css/"
 echo "@font-face {" >$name/css/$name.css
