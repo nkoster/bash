@@ -36,4 +36,9 @@ echo "}" >>$path/$name/css/$name.css
 cd "$path/$name"
 zip -r ../$name.zip fonts/ css/
 cd ..
-echo "$(pwd) rm -rf \"$name\""
+dir=$(pwd)
+dir=${dir: -7}
+if [ "$dir" == "uploads" ]; then
+    echo "-- removing $name"
+    rm -rf "$name"
+fi
