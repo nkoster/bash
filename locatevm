@@ -1,0 +1,11 @@
+#!/bin/bash
+
+grep -r "$1" /home/niels/secure/ansible/inventory.k8s/ | \
+awk '
+{
+    for(n=1;n<NF;n++){
+        if($n ~ /hv_host/) {
+            print$n
+        }
+    }
+}'
