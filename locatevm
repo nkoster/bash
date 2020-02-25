@@ -5,7 +5,7 @@ awk '
 {
     for(n=1;n<NF;n++){
         if($n ~ /hv_host/) {
-            print$n
+            print substr($n,9)
         }
     }
 }'
